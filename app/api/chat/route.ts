@@ -8,12 +8,12 @@ const APPOINTMENT_CONTEXT = {
   appointmentStatus: "Agent Assigned",
   provider: "Thyrocare Labs",
   patient: "Omkar Patil",
-  appointmentDateTime: "3 June 2025, 4:00 PM to 5:00 PM",
-  slot: "4:00 PM to 5:00 PM",
+  appointmentDateTime: "29 May 2025, 5:00 PM to 6:00 PM",
+  slot: "5:00 PM to 6:00 PM",
   agentName: "Parth Raheja",
   agentNumber: "1234567890",
   bookingTime: "26 May 2025, 11:00 AM",
-  reportTAT: "6th June 5pm",
+  reportTAT: "1st June 5pm",
   paymentMethod: "wallet",
 
   // Comprehensive Lab Package Details
