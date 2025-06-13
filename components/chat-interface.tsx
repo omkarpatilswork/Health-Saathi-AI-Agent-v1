@@ -140,6 +140,14 @@ export default function ChatInterface() {
   // Initialize chat with system message
   useEffect(() => {
     if (messages.length === 0) {
+      const queryType = searchParams.get("type") || "confirm"
+
+      if (queryType === "projectx") {
+        // Redirect to Xplore Labs & Packages chat
+        window.location.href = "/project-x"
+        return
+      }
+
       addMessage({
         sender: "system",
         message: "Health Saathi assistant is joining. Please explain your concern so we can help you better.",
@@ -155,7 +163,7 @@ export default function ChatInterface() {
         })
       }, 1500)
     }
-  }, [addMessage, messages.length])
+  }, [addMessage, messages.length, searchParams])
 
   // Auto-scroll to bottom when messages change
   useEffect(() => {

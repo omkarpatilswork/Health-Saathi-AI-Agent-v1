@@ -6,7 +6,7 @@ import Link from "next/link"
 import { useApp } from "@/context/app-context"
 
 // Category types
-type CategoryId = "appointment" | "lab" | "payment"
+type CategoryId = "appointment" | "lab" | "payment" | "projectx"
 
 export default function HelpSupport() {
   const { appointmentStatus } = useApp()
@@ -240,6 +240,49 @@ export default function HelpSupport() {
                     <h4 className="font-medium text-gray-900">Payment related queries</h4>
                     <p className="text-gray-600 text-sm mt-1">
                       For any questions about payments or billing, please chat with our support team.
+                    </p>
+                  </Link>
+                </div>
+              </div>
+            </div>
+
+            {/* Xplore Labs & Packages */}
+            <div className="bg-white rounded-lg shadow-sm overflow-hidden">
+              <button
+                onClick={() => toggleCategory("projectx")}
+                className="w-full flex items-center p-4 text-left focus:outline-none"
+              >
+                <div className="flex-shrink-0 mr-3">
+                  <div className="w-10 h-10 rounded-full bg-indigo-50 flex items-center justify-center">
+                    <span className="text-indigo-600 font-bold text-lg">X</span>
+                  </div>
+                </div>
+                <div className="flex-1">
+                  <h3 className="font-medium text-gray-900">Xplore Labs & Packages</h3>
+                  <p className="text-gray-600 text-sm mt-1">Find and compare healthcare providers and packages</p>
+                </div>
+                <div className="ml-2">
+                  {expandedCategory === "projectx" ? (
+                    <ChevronUp className="h-5 w-5 text-gray-400" />
+                  ) : (
+                    <ChevronDown className="h-5 w-5 text-gray-400" />
+                  )}
+                </div>
+              </button>
+
+              <div
+                className={`transition-all duration-300 ease-in-out overflow-hidden ${
+                  expandedCategory === "projectx" ? "max-h-[1000px] opacity-100" : "max-h-0 opacity-0"
+                }`}
+              >
+                <div className="p-4 bg-gray-50 border-t border-gray-100">
+                  <Link
+                    href="/chat?type=projectx"
+                    className="block bg-white p-3 rounded-lg border border-gray-200 hover:bg-gray-50"
+                  >
+                    <h4 className="font-medium text-gray-900">Access Xplore</h4>
+                    <p className="text-gray-600 text-sm mt-1">
+                      AI assistant to find, compare, and explore healthcare options
                     </p>
                   </Link>
                 </div>
