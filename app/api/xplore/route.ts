@@ -1,200 +1,15 @@
 import { type NextRequest, NextResponse } from "next/server"
-
-// Healthcare context data for Xplore Labs & Packages
-const HEALTHCARE_CONTEXT = {
-  // Provider Network Data
-  providers: [
-    {
-      name: "Thyrocare",
-      locations: ["400001", "411045", "560001"],
-      services: ["Blood Tests", "Full Body Checkup", "Thyroid Profile"],
-      specialties: ["Pathology", "Preventive Health"],
-      rating: "4.2",
-      reviews: "1250+",
-      contact: "+91-20-2605-7890",
-    },
-    {
-      name: "Lal Path Labs",
-      locations: ["400001", "411045", "110001"],
-      services: ["Blood Tests", "Full Body Checkup", "Cardiac Profile"],
-      specialties: ["Pathology", "Cardiology"],
-      rating: "4.4",
-      reviews: "2100+",
-      contact: "+91-20-2605-3456",
-    },
-    {
-      name: "Healthians",
-      locations: ["400001", "411045", "110001", "560001"],
-      services: ["Home Collection", "Full Body Checkup", "Vitamin Tests"],
-      specialties: ["Pathology", "Home Healthcare"],
-      rating: "4.3",
-      reviews: "1800+",
-      contact: "+91-20-2605-9876",
-    },
-    {
-      name: "Ruby Hall Labs",
-      locations: ["411001", "411045"],
-      services: ["Blood Tests", "Imaging", "Cardiac Tests"],
-      specialties: ["Pathology", "Cardiology", "Radiology"],
-      rating: "4.5",
-      reviews: "3200+",
-      contact: "+91-20-2605-1234",
-    },
-    {
-      name: "Dr. Omkar Patil's Clinic",
-      locations: ["411014", "411045"],
-      services: ["Consultation", "Health Checkup", "Preventive Care"],
-      specialties: ["General Medicine", "Preventive Health"],
-      rating: "4.7",
-      reviews: "950+",
-      contact: "+91-20-2605-5678",
-    },
-  ],
-
-  // Package Data
-  packages: [
-    {
-      name: "Full Body Checkup",
-      provider: "Thyrocare",
-      price: 799,
-      tests: ["CBC", "Lipid Profile", "Liver Function Test", "Kidney Function Test", "Thyroid Profile"],
-      tat: "24 hours",
-      homeCollection: true,
-      fasting: "8-12 hours",
-    },
-    {
-      name: "Full Body Checkup",
-      provider: "Lal Path Labs",
-      price: 1199,
-      tests: ["CBC", "Lipid Profile", "Liver Function Test", "Kidney Function Test", "Thyroid Profile", "ECG", "ESR"],
-      tat: "48 hours",
-      homeCollection: true,
-      fasting: "10-12 hours",
-    },
-    {
-      name: "Full Body Checkup",
-      provider: "Healthians",
-      price: 999,
-      tests: ["CBC", "Lipid Profile", "Liver Function Test", "Kidney Function Test", "Thyroid Profile", "Vitamin D"],
-      tat: "24 hours",
-      homeCollection: true,
-      fasting: "8-10 hours",
-    },
-    {
-      name: "Aarogyam Full Body Platinum Package",
-      provider: "Thyrocare",
-      price: 8499,
-      tests: [
-        "Complete Blood Count (22 parameters)",
-        "Lipid Profile (8 parameters)",
-        "Liver Function (12 parameters)",
-        "Kidney Function (9 parameters)",
-        "Thyroid Profile (3 parameters)",
-        "Diabetes Panel (5 parameters)",
-        "Vitamin Panel (4 parameters)",
-        "Cardiac Risk Markers (7 parameters)",
-        "Arthritis Panel (2 parameters)",
-        "And 64 more tests",
-      ],
-      tat: "48 hours",
-      homeCollection: true,
-      fasting: "8-12 hours mandatory",
-    },
-    {
-      name: "Basic Vitamin Panel",
-      provider: "Thyrocare",
-      price: 899,
-      tests: ["Vitamin D", "Vitamin B12", "Calcium"],
-      tat: "24 hours",
-      homeCollection: true,
-      fasting: "Not required",
-    },
-    {
-      name: "Vitamin Essentials",
-      provider: "Lal Path Labs",
-      price: 1299,
-      tests: ["Vitamin D", "Vitamin B12", "Vitamin B9 (Folate)", "Calcium", "Iron"],
-      tat: "36 hours",
-      homeCollection: true,
-      fasting: "Not required",
-    },
-    {
-      name: "Vitamin D Test",
-      provider: "Healthians",
-      price: 599,
-      tests: ["Vitamin D only"],
-      tat: "24 hours",
-      homeCollection: true,
-      fasting: "Not required",
-    },
-    {
-      name: "Diabetes Control Package",
-      provider: "Thyrocare",
-      price: 599,
-      tests: ["HbA1c", "Fasting Blood Sugar", "Post Prandial Blood Sugar", "Lipid Profile"],
-      tat: "24 hours",
-      homeCollection: true,
-      fasting: "8-12 hours",
-    },
-    {
-      name: "Diabetes Care Package",
-      provider: "Lal Path Labs",
-      price: 699,
-      tests: ["HbA1c", "Fasting Blood Sugar", "Post Prandial Blood Sugar", "Lipid Profile", "Kidney Function Test"],
-      tat: "36 hours",
-      homeCollection: true,
-      fasting: "8-12 hours",
-    },
-  ],
-
-  // Slot Availability Data
-  slots: {
-    "Ruby Hall Labs": {
-      "29 May 2025": ["09:00 AM", "10:00 AM", "11:00 AM", "02:00 PM", "03:00 PM"],
-      "30 May 2025": ["09:00 AM", "10:00 AM", "12:00 PM", "01:00 PM", "04:00 PM"],
-      tomorrow: ["08:00 AM", "09:00 AM", "11:00 AM", "02:00 PM", "05:00 PM"],
-    },
-    Thyrocare: {
-      "29 May 2025": ["06:00 AM", "07:00 AM", "08:00 AM", "05:00 PM", "06:00 PM"],
-      "30 May 2025": ["06:00 AM", "07:00 AM", "08:00 AM", "09:00 AM", "05:00 PM"],
-      tomorrow: ["06:00 AM", "07:00 AM", "08:00 AM", "09:00 AM", "05:00 PM", "06:00 PM"],
-    },
-    "Dr. Omkar P": {
-      "29 May 2025": ["10:00 AM", "11:00 AM", "04:00 PM", "05:00 PM", "06:00 PM"],
-      "30 May 2025": ["10:00 AM", "11:00 AM", "12:00 PM", "04:00 PM", "05:00 PM"],
-      tomorrow: ["10:00 AM", "11:00 AM", "12:00 PM", "04:00 PM", "05:00 PM", "06:00 PM"],
-    },
-  },
-
-  // Test Information
-  testInfo: {
-    "Vitamin D": {
-      purpose: "Measures the level of Vitamin D in your blood",
-      normalRange: "30-100 ng/mL",
-      lowIndicates: "Bone weakening, increased risk of fractures",
-      highIndicates: "Potential toxicity, kidney stones",
-      preparation: "No special preparation required",
-    },
-    "Thyroid Profile": {
-      purpose: "Evaluates thyroid function",
-      includes: "T3, T4, TSH",
-      normalRange: "TSH: 0.4-4.0 mIU/L, T4: 5.0-12.0 μg/dL, T3: 80-200 ng/dL",
-      preparation: "No special preparation required",
-    },
-    "Lipid Profile": {
-      purpose: "Assesses cardiovascular risk",
-      includes: "Total Cholesterol, HDL, LDL, Triglycerides",
-      normalRange: "Total Cholesterol: <200 mg/dL, HDL: >40 mg/dL, LDL: <100 mg/dL, Triglycerides: <150 mg/dL",
-      preparation: "8-12 hours fasting required",
-    },
-    "Blood Sugar": {
-      purpose: "Screens for diabetes and monitors blood glucose levels",
-      includes: "Fasting Blood Sugar, Post Prandial Blood Sugar",
-      normalRange: "Fasting: 70-100 mg/dL, Post Prandial: <140 mg/dL",
-      preparation: "8-12 hours fasting required for FBS, 2 hours after meal for PPBS",
-    },
-  },
-}
+import {
+  searchByPincode,
+  searchByLab,
+  searchByLabAndPincode,
+  findPackageWithInclusions,
+  isGMCMapped,
+  isGMCPackageAtCentre,
+  findDuplicatePackages,
+  getAllLabs,
+  getPackageStats,
+} from "@/utils/projectXBot"
 
 export async function POST(request: NextRequest) {
   try {
@@ -205,159 +20,407 @@ export async function POST(request: NextRequest) {
     }
 
     console.log("Received Xplore message:", message)
-    console.log("Conversation history length:", conversationHistory.length)
 
-    // Use Gemini API with healthcare context
-    const geminiResult = await callGeminiXplore(message, conversationHistory, HEALTHCARE_CONTEXT)
+    // Process query and generate response
+    const response = await processProjectXQuery(message, conversationHistory)
 
     return NextResponse.json({
-      response: geminiResult.response,
-      source: "gemini",
+      response: response,
+      source: "projectx",
     })
   } catch (error) {
     console.error("Xplore API error:", error)
-    return NextResponse.json(
-      {
-        error: "Internal server error",
-        details: error instanceof Error ? error.message : "Unknown error",
-      },
-      { status: 500 },
-    )
+
+    return NextResponse.json({
+      response: `🔍 **Healthcare Catalogue Assistant**
+
+I'm experiencing some technical difficulties right now, but I'm still here to help you with:
+- 📍 Search labs by pincode
+- 🏥 Find packages by lab name  
+- 🧪 Search tests and inclusions
+- 🔗 Check GMC mappings
+- 📊 Find duplicate packages
+
+Please try asking about any of these topics.`,
+      source: "fallback",
+    })
   }
 }
 
-async function callGeminiXplore(
-  prompt: string,
-  conversationHistory: Array<{ role: "user" | "model"; text: string }> = [],
-  healthcareContext?: any,
-): Promise<{ response: string }> {
+async function processProjectXQuery(prompt: string, conversationHistory: any[]): Promise<string> {
+  const lowerPrompt = prompt.toLowerCase()
+
+  // Determine query type and extract parameters
+  const queryResult = analyzeQuery(prompt)
+
+  if (!queryResult.type) {
+    return generateWelcomeMessage()
+  }
+
+  // Execute the appropriate function based on query type
+  let result
   try {
-    const apiKey = process.env.GEMINI_API_KEY
+    switch (queryResult.type) {
+      case "searchByPincode":
+        result = searchByPincode(queryResult.params.pincode)
+        return formatPincodeResults(result, queryResult.params.pincode)
 
-    if (!apiKey) {
-      throw new Error("GEMINI_API_KEY is not configured")
-    }
+      case "searchByLab":
+        result = searchByLab(queryResult.params.labName)
+        return formatLabResults(result, queryResult.params.labName)
 
-    // Enhanced system prompt for Xplore Labs & Packages
-    const systemPrompt = `You are a healthcare concierge assistant for "Xplore Labs & Packages", helping users find and understand healthcare services.
+      case "searchByLabAndPincode":
+        result = searchByLabAndPincode(queryResult.params.labName, queryResult.params.pincode)
+        return formatLabPincodeResults(result, queryResult.params.labName, queryResult.params.pincode)
 
-🎯 Your goals:
-1. Act as a personal healthcare concierge who helps users understand lab tests, find packages, compare providers, and book slots
-2. Keep responses conversational, helpful, and informative
-3. Use the healthcare context data to provide accurate information
-4. Format responses clearly with markdown for better readability
-5. Provide specific recommendations based on price, quality, and convenience
-6. Always include relevant details like pricing, preparation requirements, and what tests measure
-7. Help users make informed healthcare decisions
+      case "findPackageWithInclusions":
+        result = findPackageWithInclusions(queryResult.params.inclusions)
+        return formatInclusionResults(result, queryResult.params.inclusions)
 
-### HEALTHCARE CONTEXT DATA:
-${JSON.stringify(healthcareContext, null, 2)}
+      case "isGMCMapped":
+        result = isGMCMapped(queryResult.params.labName)
+        return formatGMCResults(result, queryResult.params.labName)
 
-### RESPONSE PATTERNS:
+      case "isGMCPackageAtCentre":
+        result = isGMCPackageAtCentre(queryResult.params.labName, queryResult.params.packageName)
+        return formatGMCPackageResults(result, queryResult.params.labName, queryResult.params.packageName)
 
-**Network Queries (Finding Providers):**
-- Include provider name, specialties, ratings, contact info, and Google Maps link
-- Mention distance if available
-- Format as a clear list with bold provider names
-- Example: "**Ruby Hall Labs** (4.5⭐, 3200+ reviews) offers blood tests and cardiac services. Located in 411001, 411045. Contact: +91-20-2605-1234. [View on Map](https://maps.google.com/?q=Ruby+Hall+Labs+Pune)"
+      case "findDuplicatePackages":
+        result = findDuplicatePackages(queryResult.params.packageName)
+        return formatDuplicateResults(result, queryResult.params.packageName)
 
-**Package Queries:**
-- Include package name, provider, price, tests included, turnaround time, and preparation requirements
-- For comparisons, use markdown tables to clearly show differences
-- Highlight key differences and make recommendations based on value
-- Example: "The **Full Body Checkup** by Thyrocare (₹799) includes 5 tests with results in 24 hours. Fasting required: 8-12 hours."
+      case "getAllLabs":
+        result = getAllLabs()
+        return formatAllLabsResults(result)
 
-**Slot Queries:**
-- List available slots with times and dates
-- Include booking instructions
-- Example: "Ruby Hall Labs has slots available tomorrow at: 08:00 AM, 09:00 AM, 11:00 AM, 02:00 PM, 05:00 PM. Would you like to book any of these?"
+      case "getStats":
+        result = getPackageStats()
+        return formatStatsResults(result)
 
-**Test Information Queries:**
-- Explain what tests measure, normal ranges, and preparation requirements
-- Use simple language to explain medical concepts
-- Example: "Vitamin D test measures the level of this essential vitamin in your blood. Normal range is 30-100 ng/mL. Low levels may indicate bone weakening."
-
-Always be helpful, accurate, and focused on making healthcare decisions easier for the user. If you don't have specific information, acknowledge that and offer to help with what you do know.`
-
-    // Build conversation contents with history
-    const contents = []
-
-    // Add conversation history (last 8 messages for better context)
-    const recentHistory = conversationHistory.slice(-8)
-    for (const message of recentHistory) {
-      contents.push({
-        role: message.role,
-        parts: [{ text: message.text }],
-      })
-    }
-
-    // Add current user prompt with system context
-    contents.push({
-      role: "user",
-      parts: [{ text: `${systemPrompt}\n\nUser Query: "${prompt}"` }],
-    })
-
-    const response = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${apiKey}`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          contents,
-          generationConfig: {
-            temperature: 0.7,
-            topK: 40,
-            topP: 0.95,
-            maxOutputTokens: 800,
-          },
-          safetySettings: [
-            {
-              category: "HARM_CATEGORY_HARASSMENT",
-              threshold: "BLOCK_MEDIUM_AND_ABOVE",
-            },
-            {
-              category: "HARM_CATEGORY_HATE_SPEECH",
-              threshold: "BLOCK_MEDIUM_AND_ABOVE",
-            },
-            {
-              category: "HARM_CATEGORY_SEXUALLY_EXPLICIT",
-              threshold: "BLOCK_MEDIUM_AND_ABOVE",
-            },
-            {
-              category: "HARM_CATEGORY_DANGEROUS_CONTENT",
-              threshold: "BLOCK_MEDIUM_AND_ABOVE",
-            },
-          ],
-        }),
-      },
-    )
-
-    if (!response.ok) {
-      const errorText = await response.text()
-      console.error("Gemini API error response:", errorText)
-      throw new Error(`Gemini API error: ${response.status} - ${errorText}`)
-    }
-
-    const data = await response.json()
-    console.log("Gemini API response:", JSON.stringify(data, null, 2))
-
-    const text = data?.candidates?.[0]?.content?.parts?.[0]?.text
-
-    if (!text) {
-      console.error("No text in Gemini response:", data)
-      throw new Error("No response from Gemini API")
-    }
-
-    return {
-      response: text.trim(),
+      default:
+        return generateHelpMessage()
     }
   } catch (error) {
-    console.error("Error calling Gemini API for Xplore:", error)
-    return {
-      response:
-        "I'm having trouble processing your request right now. Please try asking about healthcare providers, packages, or slots again.",
+    console.error("Error processing query:", error)
+    return "❌ Sorry, I encountered an error processing your request. Please try again or rephrase your question."
+  }
+}
+
+// Analyze user query to determine type and extract parameters
+function analyzeQuery(prompt: string) {
+  const lowerPrompt = prompt.toLowerCase()
+
+  // Extract pincode
+  const pincodeMatch = prompt.match(/\b(\d{6})\b/)
+  const pincode = pincodeMatch ? pincodeMatch[1] : null
+
+  // Extract lab names
+  const labNames = ["thyrocare", "lal path", "ruby hall", "healthians"]
+  let labName = null
+  for (const name of labNames) {
+    if (lowerPrompt.includes(name)) {
+      labName = name
+      break
     }
   }
+
+  // Extract test inclusions
+  const testNames = ["cbc", "lipid", "lft", "kft", "thyroid", "ecg", "vitamin d", "vitamin b12", "hba1c", "sugar"]
+  const inclusions = testNames.filter((test) => lowerPrompt.includes(test))
+
+  // Extract package names
+  const packageMatch = prompt.match(/(?:package|checkup)\s+["']?([^"']+)["']?/i)
+  const packageName = packageMatch ? packageMatch[1] : null
+
+  // Determine query type based on content
+  if (lowerPrompt.includes("stats") || lowerPrompt.includes("statistics")) {
+    return { type: "getStats", params: {} }
+  }
+
+  if (lowerPrompt.includes("all labs") || lowerPrompt.includes("list labs")) {
+    return { type: "getAllLabs", params: {} }
+  }
+
+  if (lowerPrompt.includes("duplicate") || lowerPrompt.includes("replica")) {
+    if (packageName || lowerPrompt.includes("full body") || lowerPrompt.includes("checkup")) {
+      return {
+        type: "findDuplicatePackages",
+        params: { packageName: packageName || "full body checkup" },
+      }
+    }
+  }
+
+  if (lowerPrompt.includes("gmc")) {
+    if (lowerPrompt.includes("package") && labName && packageName) {
+      return {
+        type: "isGMCPackageAtCentre",
+        params: { labName, packageName },
+      }
+    } else if (labName) {
+      return {
+        type: "isGMCMapped",
+        params: { labName },
+      }
+    }
+  }
+
+  if (inclusions.length > 0) {
+    return {
+      type: "findPackageWithInclusions",
+      params: { inclusions },
+    }
+  }
+
+  if (labName && pincode) {
+    return {
+      type: "searchByLabAndPincode",
+      params: { labName, pincode },
+    }
+  }
+
+  if (pincode) {
+    return {
+      type: "searchByPincode",
+      params: { pincode },
+    }
+  }
+
+  if (labName) {
+    return {
+      type: "searchByLab",
+      params: { labName },
+    }
+  }
+
+  return { type: null, params: {} }
+}
+
+// Formatting functions for different result types
+function formatPincodeResults(result: any, pincode: string): string {
+  if (!result.success || result.count === 0) {
+    return `❌ **No labs found in pincode ${pincode}**
+
+Please check the pincode or try a nearby area.`
+  }
+
+  let response = `📍 **Labs Available in Pincode ${pincode}**\n\n`
+
+  result.data.forEach((lab: any) => {
+    response += `🏥 **${lab.labName}**\n`
+    response += `📍 ${lab.address}\n`
+    response += `⭐ ${lab.rating} (${lab.reviews}+ reviews)\n`
+    response += `📞 ${lab.contact}\n`
+    response += `🏠 Home Collection: ${lab.homeCollection ? "✅ Available" : "❌ Not Available"}\n`
+    response += `📦 Packages: ${lab.packages.length}\n\n`
+  })
+
+  return response + "Would you like details about packages at any specific lab?"
+}
+
+function formatLabResults(result: any, labName: string): string {
+  if (!result.success || result.count === 0) {
+    return `❌ **No labs found matching "${labName}"**
+
+Please check the lab name or try a different spelling.`
+  }
+
+  let response = `🏥 **${labName} Lab Details**\n\n`
+
+  result.data.forEach((lab: any) => {
+    response += `**${lab.labName}** - ${lab.address}\n`
+    response += `⭐ ${lab.rating} (${lab.reviews}+ reviews) | 📞 ${lab.contact}\n`
+    response += `🏠 Home Collection: ${lab.homeCollection ? "✅" : "❌"}\n\n`
+
+    response += `📦 **Available Packages:**\n`
+    lab.packages.forEach((pkg: any) => {
+      response += `• **${pkg.name}** - ₹${pkg.price}\n`
+      response += `  Tests: ${pkg.inclusions.join(", ")}\n`
+      response += `  TAT: ${pkg.tat} | GMC: ${pkg.isGMC ? "✅" : "❌"}\n\n`
+    })
+  })
+
+  return response
+}
+
+function formatLabPincodeResults(result: any, labName: string, pincode: string): string {
+  if (!result.success || result.count === 0) {
+    return `❌ **No ${labName} labs found in pincode ${pincode}**
+
+Try checking nearby pincodes or different lab names.`
+  }
+
+  return formatLabResults(result, `${labName} in ${pincode}`)
+}
+
+function formatInclusionResults(result: any, inclusions: string[]): string {
+  if (!result.success || result.count === 0) {
+    return `❌ **No packages found with tests: ${inclusions.join(", ")}**
+
+Try searching with different test names or fewer inclusions.`
+  }
+
+  let response = `🧪 **Packages with Tests: ${inclusions.join(", ")}**\n\n`
+
+  result.data.forEach((item: any) => {
+    response += `📦 **${item.package}** at **${item.lab}**\n`
+    response += `📍 ${item.address} (${item.pincode})\n`
+    response += `💰 ₹${item.price} | ⏱️ ${item.tat}\n`
+    response += `🏠 Home Collection: ${item.homeCollection ? "✅" : "❌"} | GMC: ${item.isGMC ? "✅" : "❌"}\n`
+    response += `🧪 All Tests: ${item.inclusions.join(", ")}\n\n`
+  })
+
+  return response
+}
+
+function formatGMCResults(result: any, labName: string): string {
+  if (!result.success) {
+    return `❌ **Lab "${labName}" not found**
+
+Please check the lab name spelling.`
+  }
+
+  let response = `🔗 **GMC Mapping Status for ${labName}**\n\n`
+
+  result.data.forEach((lab: any) => {
+    response += `🏥 **${lab.lab}** - ${lab.address} (${lab.pincode})\n`
+    response += `GMC Status: ${lab.isGMCMapped ? "✅ Mapped" : "❌ Not Mapped"}\n`
+    response += `GMC Packages: ${lab.gmcPackageCount}/${lab.totalPackages}\n`
+
+    if (lab.gmcPackages.length > 0) {
+      response += `GMC Package Names: ${lab.gmcPackages.join(", ")}\n`
+    }
+    response += `\n`
+  })
+
+  return response
+}
+
+function formatGMCPackageResults(result: any, labName: string, packageName: string): string {
+  if (!result.success) {
+    return `❌ **Lab "${labName}" not found**
+
+Please check the lab name spelling.`
+  }
+
+  if (result.count === 0) {
+    return `❌ **Package "${packageName}" not found at ${labName}**
+
+Please check the package name or try a different lab.`
+  }
+
+  let response = `🔗 **GMC Package Status: "${packageName}" at ${labName}**\n\n`
+
+  result.data.forEach((item: any) => {
+    response += `📦 **${item.package}** at **${item.lab}** (${item.pincode})\n`
+    response += `GMC Status: ${item.isGMC ? "✅ GMC Mapped" : "❌ Not GMC Mapped"}\n`
+    response += `💰 Price: ₹${item.price}\n`
+    response += `🧪 Inclusions: ${item.inclusions.join(", ")}\n\n`
+  })
+
+  return response
+}
+
+function formatDuplicateResults(result: any, packageName: string): string {
+  if (!result.success || result.count === 0) {
+    return `❌ **No packages found matching "${packageName}"**
+
+Try searching with a different package name.`
+  }
+
+  let response = `🔍 **Duplicate/Similar Packages for "${packageName}"**\n`
+  response += `Found ${result.count} packages across ${result.duplicateGroups} similar names\n\n`
+
+  // Group similar packages for better comparison
+  Object.entries(result.grouped).forEach(([packageType, packages]: [string, any]) => {
+    if (packages.length > 1) {
+      response += `📦 **${packages[0].package}** (${packages.length} locations)\n\n`
+
+      response += `| Lab | Location | Price | GMC | Home Collection |\n`
+      response += `|-----|----------|-------|-----|----------------|\n`
+
+      packages.forEach((pkg: any) => {
+        response += `| ${pkg.lab} | ${pkg.pincode} | ₹${pkg.price} | ${pkg.isGMC ? "✅" : "❌"} | ${pkg.homeCollection ? "✅" : "❌"} |\n`
+      })
+      response += `\n`
+    }
+  })
+
+  return response
+}
+
+function formatAllLabsResults(result: any): string {
+  let response = `🏥 **All Available Labs**\n\n`
+
+  result.data.forEach((lab: any) => {
+    response += `**${lab.labName}** - ${lab.address} (${lab.pincode})\n`
+    response += `⭐ ${lab.rating} (${lab.reviews}+ reviews)\n`
+    response += `📦 ${lab.packageCount} packages (${lab.gmcPackages} GMC mapped)\n`
+    response += `🏠 Home Collection: ${lab.homeCollection ? "✅" : "❌"}\n\n`
+  })
+
+  return response
+}
+
+function formatStatsResults(result: any): string {
+  const stats = result.data
+  return `📊 **Healthcare Catalogue Statistics**
+
+**Package Overview:**
+• Total Packages: ${stats.totalPackages}
+• GMC Mapped: ${stats.gmcPackages} (${stats.gmcPercentage}%)
+• Non-GMC: ${stats.nonGmcPackages}
+
+**Price Range:**
+• Minimum: ₹${stats.priceRange.min}
+• Maximum: ₹${stats.priceRange.max}
+
+**Network:**
+• Total Lab Locations: ${stats.totalLabs}
+
+This data helps you understand our catalogue coverage and GMC mapping status.`
+}
+
+function generateWelcomeMessage(): string {
+  return `👋 **Hi! I'm Project X — your AI assistant**
+
+I can help you with catalogue availability, GMC mappings, and duplicate packages. Here's what I can do:
+
+**🔍 Search Options:**
+• Search labs by pincode
+• Find packages by lab name
+• Search by specific tests/inclusions
+• Check GMC mapping status
+• Find duplicate packages
+
+**💡 Try asking:**
+• "Show me labs in pincode 411014"
+• "Which packages at Thyrocare include CBC and Lipid?"
+• "Is Lal Path Labs GMC mapped?"
+• "Find duplicate Full Body Checkup packages"
+
+What would you like to explore?`
+}
+
+function generateHelpMessage(): string {
+  return `ℹ️ **I can help you with:**
+
+**1️⃣ Search by Pincode**
+Example: "Labs in 411014"
+
+**2️⃣ Search by Lab**
+Example: "Thyrocare packages"
+
+**3️⃣ Search by Tests**
+Example: "Packages with CBC and Lipid"
+
+**4️⃣ GMC Mapping**
+Example: "Is Ruby Hall GMC mapped?"
+
+**5️⃣ Duplicate Packages**
+Example: "Find duplicate Full Body Checkup"
+
+**6️⃣ Statistics**
+Example: "Show catalogue stats"
+
+Please try one of these query types!`
 }
