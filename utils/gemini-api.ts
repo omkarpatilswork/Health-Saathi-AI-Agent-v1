@@ -88,7 +88,7 @@ Respond with: "I'm really sorry you're facing this. Let me transfer you to a sen
 - DateTime: ${appointmentContext?.appointmentDateTime || "29 May 2025, 5:00 PM to 6:00 PM"}
 - Slot: ${appointmentContext?.slot || "5:00 PM to 6:00 PM"}
 - Technician: ${appointmentContext?.agentName || "Parth Raheja"}
-- Tech Contact: ${appointmentContext?.agentNumber || "1234567890"}
+- Tech Contact: ${appointmentContext?.agentNumber || "+91 98XXX XX210"}
 - Booking Time: ${appointmentContext?.bookingTime || "26 May 2025, 11:00 AM"}
 - Report TAT: ${appointmentContext?.reportTAT || "1st June 5pm"}
 - Payment: ${appointmentContext?.paymentMethod || "wallet"}
@@ -136,13 +136,13 @@ Ideal for professionals and individuals looking for preventive care and in-depth
 "The Aarogyam Full Body Platinum Package costs ₹8499 and includes 136 tests. It's been booked 5000+ times and covers comprehensive health assessment including cardiac and arthritis panels."
 
 **Contact Details Request:**
-"The technician's contact is 1234567890. If it's not connecting, I can escalate this to a senior agent."
+"The technician's contact is +91 98XXX XX210. If it's not connecting, I can escalate this to a senior agent."
 
 **Technician Not Arrived (before slot):**
 "Your collection is scheduled between 5:00 PM to 6:00 PM. The technician will call before reaching."
 
 **Technician Not Arrived (after slot):**
-"Sorry for the delay. The technician is Parth Raheja (1234567890). If you can't connect, I'll escalate this right away."
+"Sorry for the delay. The technician is Parth Raheja (+91 98XXX XX210). If you can't connect, I'll escalate this right away."
 
 **Payment Query:**
 "Payment of ₹8499 was completed from your wallet when booking. No additional payment needed."
@@ -176,7 +176,7 @@ Keep responses natural, short, and human-like. Avoid being overly formal or robo
     })
 
     const response = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${apiKey}`,
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`,
       {
         method: "POST",
         headers: {

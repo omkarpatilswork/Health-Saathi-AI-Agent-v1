@@ -17,7 +17,7 @@ const CUSTOMER_DATA = {
   appointmentDateTime: "29 May 2025, 5:00 PM to 6:00 PM",
   slot: "5:00 PM to 6:00 PM",
   agentName: "Parth Raheja",
-  agentNumber: "1234567890",
+  agentNumber: "+91 98XXX XX210",
   bookingTime: "26 May 2025, 11:00 AM",
   reportTAT: "1st June 5pm",
   paymentMethod: "wallet",

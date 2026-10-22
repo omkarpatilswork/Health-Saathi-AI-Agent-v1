@@ -41,7 +41,7 @@ const HEALTHCARE_CONTEXT = {
       contact: "+91-20-2605-1234",
     },
     {
-      name: "Dr. Omkar Patil's Clinic",
+      name: "Wellness First Clinic",
       locations: ["411014", "411045"],
       services: ["Consultation", "Health Checkup", "Preventive Care"],
       specialties: ["General Medicine", "Preventive Health"],
@@ -298,7 +298,7 @@ Always be helpful, accurate, and focused on making healthcare decisions easier f
     })
 
     const response = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${apiKey}`,
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`,
       {
         method: "POST",
         headers: {
